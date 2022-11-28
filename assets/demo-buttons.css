@@ -1,0 +1,13 @@
+.link-button {
+    margin-top: 3px;
+    margin-right: 10px;
+    vertical-align: top;
+    color: #121234;
+    float: right;
+    border-color: #121234;
+}
+
+.link-button:hover {
+    color: white;
+    border-color: white;
+}

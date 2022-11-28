@@ -1,0 +1,8 @@
+python~=3.9.13
+dash==2.0.0
+flask==2.0.2
+werkzeug==2.0.1
+plotly==5.11.0
+numpy
+pandas
+statsmodels
