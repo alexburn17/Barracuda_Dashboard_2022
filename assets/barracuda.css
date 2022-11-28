@@ -62,8 +62,10 @@ body {
     margin: 0;
 }
 
-/* Panels
+/* Panels 872
 ------------------------------------------------- */
+
+
 .container {
     display: flex;
     flex-wrap: wrap;
@@ -74,9 +76,13 @@ body {
     justify-content: center;
 }
 
+
+
 .chart-content {
-    width: 872px;
+    height: 600px;
 }
+
+
 
 /* For Mobile and small screens
 ----------------------------------------------- */
@@ -112,6 +118,7 @@ body {
 /* For Desktop
 ----------------------------------------------- */
 @media (min-width: 1251px) {
+
     .inner-container {
         min-width: 50%;
     }
