@@ -80,17 +80,30 @@ def trend_by_slope(dataframe, y_col, t_size):
 # Aggregators for the dataset
 def aggregate_dataframe(df, time_val, lat_val, lon_val, y_val, agg_type):
     if agg_type == "mean":
-        summ_df = df[[time_val, lat_val, lon_val, y_val]].groupby(time_val).mean().reset_index()
+
+        if "fips" in df.columns:
+            summ_df = df[[time_val, "fips", y_val]].groupby(time_val).mean().reset_index()
+        else:
+            summ_df = df[[time_val, lat_val, lon_val, y_val]].groupby(time_val).mean().reset_index()
 
     # if the dataset is of even length, round down to the next closest median.
     if agg_type == "median":
         if len(df.index) % 2 == 0:
-            sorted_df = df.sort_values(by=[y_val], ascending=True)
-            summ_df = sorted_df.groupby(time_val).apply(
-                lambda x: x[x[y_val] == x[y_val].iloc[0:(int(len(x) - 1))].median()])
+
+
+
+            summ_df = df.groupby(time_val).median().reset_index()
+
+            #sorted_df = df.sort_values(by=[y_val], ascending=True)
+            #summ_df = sorted_df.groupby(time_val).apply(
+            #    lambda x: x[x[y_val] == x[y_val].iloc[0:(int(len(x) - 1))].median()])
+
         else:
-            summ_df = df.groupby(time_val).apply(
-                lambda x: x[x[y_val] == x[y_val].median()])
+
+            #summ_df = df.groupby(time_val).apply(
+            #    lambda x: x[x[y_val] == x[y_val].median()])
+            summ_df = df.groupby(time_val).median().reset_index()
+
 
     if agg_type == "max":
         summ_df = df.groupby(time_val).apply(lambda x: x[x[y_val] == x[y_val].max()])

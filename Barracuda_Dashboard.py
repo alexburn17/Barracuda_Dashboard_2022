@@ -540,6 +540,10 @@ def display_line_chart(selected_data, chart_dropdown, data_dropdown, dataframe_d
             fig = default_chart()
             return fig
 
+        # make fips code and index
+        if "fips" == sub_df.index.name:
+            sub_df = sub_df.reset_index()
+
         # select the data to plot
         summ_df = aggregate_dataframe(sub_df, time_val, lat_val, lon_val, y_val, chart_dropdown)
 
