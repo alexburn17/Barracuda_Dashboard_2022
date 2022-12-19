@@ -90,8 +90,6 @@ def aggregate_dataframe(df, time_val, lat_val, lon_val, y_val, agg_type):
     if agg_type == "median":
         if len(df.index) % 2 == 0:
 
-
-
             summ_df = df.groupby(time_val).median().reset_index()
 
             #sorted_df = df.sort_values(by=[y_val], ascending=True)

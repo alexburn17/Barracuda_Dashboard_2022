@@ -6,7 +6,6 @@ import numpy as np
 import datetime
 import statsmodels.api as sm
 from Barracuda_Styles import STYLES
-
 #######################################################################################################################
 
 
@@ -30,10 +29,12 @@ def default_chart(message="Click drag on the map to select counties"):
 def plot_line(df, time_val, y_val, label):
     fig = go.Figure()
 
+    print(df)
+
     fig.add_trace(go.Scatter(
         x=df[time_val],
         y=df[y_val],
-        mode='lines',
+        mode='lines+markers',
         line={'color': STYLES['line_colors'][0]},
         showlegend=False
     ))
@@ -116,15 +117,31 @@ def plot_statespace(df, time_val, lat_val, lon_val, label):
     fig_layout = style_figure(fig['layout'], label)
     fig.layout.width = 790
 
-
     return fig
 
 
 # Creates Choropleth figure
-def plot_choropleth(dataframe, dataframe_label, data_label, data_json, years, counties):
+def plot_choropleth(dataframe, dataframe_label, data_label, data_json, years, counties, address, zips_df):
+
     if data_json[dataframe_label]['space_type'] == 'latlong':
+
+        lat = 43
+        lon = -74
+        zoom = 4.5
+
+        if ',' in address:
+            addressSplit = address.split(",") # split address by comma
+
+            # get row of data frame based on city and state
+            coords = zips_df[(zips_df['city'] == addressSplit[0]) & (zips_df['state_id'] == addressSplit[1].strip())].head(1)
+            lat = float(coords["lat"]) # get coords
+            lon = float(coords["lon"]) # get coords
+            zoom = 9
+
+
         dataframe['timeChar'] = dataframe[data_json[dataframe_label]['temporal_key']].astype('str')
         max_val = np.nanmax(dataframe[data_label])
+
 
         fig = px.scatter_mapbox(dataframe, lat=data_json[dataframe_label]['space_keys'][0],
                                 lon=data_json[dataframe_label]['space_keys'][1],
@@ -136,35 +153,69 @@ def plot_choropleth(dataframe, dataframe_label, data_label, data_json, years, co
                                 )
 
         # Choropleth Layout
-        fig.update_layout(mapbox_style="carto-darkmatter", mapbox_zoom=4.5, mapbox_center={"lat": 43, "lon": -74}, )
+        fig.update_layout(mapbox_style="carto-darkmatter", mapbox_zoom=zoom, mapbox_center={"lat": lat, "lon": lon}, )
         fig.update_layout(margin={"r": 0, "t": 0, "l": 20, "b": 0},
                           plot_bgcolor=STYLES["chart_background"],
                           paper_bgcolor=STYLES["chart_background"],
                           font=dict(color=STYLES["font"]),
                           # dragmode="lasso",
                           )
-        fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 200
-        fig.layout.updatemenus[0].buttons[0].args[1]["transition"]["duration"] = 200
-        fig.layout.coloraxis.showscale = True
-        fig.layout.sliders[0].pad.t = 10
-        fig.layout.updatemenus[0].pad.t = 10
+
+        unique_times = len(pd.unique(dataframe['timeChar']))
+
         fig.layout.height = 600
+        fig.layout.coloraxis.showscale = True
+
+        if unique_times > 1:
+            fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 200
+            fig.layout.updatemenus[0].buttons[0].args[1]["transition"]["duration"] = 200
+            fig.layout.sliders[0].pad.t = 10
+            fig.layout.updatemenus[0].pad.t = 10
 
     else:
+
+        lat = 34.640033
+        lon = -95.981758
+        zoom = 2.9
+
+        if ',' in address:
+            addressSplit = address.split(",") # split address by comma
+
+            # get row of data frame based on city and state
+            coords = zips_df[(zips_df['city'] == addressSplit[0]) & (zips_df['state_id'] == addressSplit[1].strip())].head(1)
+            lat = float(coords["lat"]) # get coords
+            lon = float(coords["lon"]) # get coords
+            zoom = 9
+
         # Find max value for heat map bar
         max_val = max(dataframe[data_label])
 
-        # filter by year
-        map_dat_filtered = dataframe[(dataframe[data_json[dataframe_label]['temporal_key']] == years)]
+        if data_json[dataframe_label]['dataset_label'] != 'Annual Climate Data':
 
-        fig = px.choropleth_mapbox(map_dat_filtered, geojson=counties, locations='fips', color=data_label,
-                                   color_continuous_scale="Viridis",
-                                   range_color=(0, max_val),
-                                   mapbox_style="carto-darkmatter",
-                                   zoom=2.9, center={"lat": 34.640033, "lon": -95.981758},
-                                   opacity=0.9,
-                                   labels={data_label: ' ', 'time': 'Year', 'Counties': 'County Code'}
-                                   )
+
+            dataframe['timeChar'] = dataframe[data_json[dataframe_label]['temporal_key']].astype('str')
+
+            fig = px.choropleth_mapbox(dataframe, geojson=counties, locations='fips', color=data_label,
+                               color_continuous_scale="Viridis",
+                               range_color=(0, max_val),
+                               animation_frame='timeChar',
+                               mapbox_style="carto-darkmatter",
+                               zoom=zoom, center={"lat": lat, "lon": lon},
+                               opacity=0.9,
+                               labels={data_label: ' ', 'time': 'Time', 'Counties': 'County Code'}
+                               )
+        else:
+
+            # filter by year
+            dataframe = dataframe[(dataframe[data_json[dataframe_label]['temporal_key']] == years)]
+            fig = px.choropleth_mapbox(dataframe, geojson=counties, locations='fips', color=data_label,
+                           color_continuous_scale="Viridis",
+                           range_color=(0, max_val),
+                           mapbox_style="carto-darkmatter",
+                           zoom=zoom, center={"lat": lat, "lon": lon},
+                           opacity=0.9,
+                           labels={data_label: ' ', 'time': 'Time', 'Counties': 'County Code'}
+                           )
 
         fig.update_layout(margin={"r": 0, "t": 0, "l": 20, "b": 0},
                           geo_scope='usa',
@@ -245,7 +296,7 @@ def style_figure(layout, title):
 
     # See plot.ly/python/reference
     fig_layout["yaxis"]["title"] = title
-    fig_layout["xaxis"]["title"] = "Time (years)"
+    fig_layout["xaxis"]["title"] = "Time"
     fig_layout["yaxis"]["fixedrange"] = True
     fig_layout["xaxis"]["fixedrange"] = False
     fig_layout["hovermode"] = "closest"

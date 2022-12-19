@@ -1,1 +1,1 @@
-{"temporal": ["time", "year", "date"], "spatial": ["latitude", "lat", "longitude", "lon", "long", "county", "zip", "fips", "location"]}
+{"temporal": ["time", "year", "date", "None"], "spatial": ["latitude", "lat", "longitude", "lon", "long", "county", "zip", "fips", "location", ["None", "None", "fips"]]}

@@ -14,6 +14,7 @@ import dash
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
+import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import pandas as pd
 
@@ -52,15 +53,18 @@ df_kestral_model = pd.read_csv(data_kestral_model)
 data_carya_ovata = "data/Carya_ovata.csv"
 df_carya_ovata = pd.read_csv(data_carya_ovata)
 
-# read in carya ovata range shift data imported from spacetime API
-# data_carya_ovata_spacetime = "data/carya_ovata_10km.csv"
-# df_carya_ovata_spacetime = pd.read_csv(data_carya_ovata_spacetime)
-# df_carya_ovata_spacetime['time'] = df_carya_ovata_spacetime['time'].astype("datetime64[ns]")
+# read in carya ovata range shift data
+zips = "data/zips_dash.csv"
+zips_df = pd.read_csv(zips)
 
-# read in precipitation dataset imported from spacetime API
-# data_precipitation = "data/precip_past.csv"
-# df_precipitation = pd.read_csv(data_precipitation)
-# df_precipitation['time'] = df_precipitation['time'].astype("datetime64[ns]")
+# read in carya ovata range shift data imported from spacetime API
+crop_climate_trends_spacetime = "data/crop_climate_trends.csv"
+df_crop_climate_trends_spacetime = pd.read_csv(crop_climate_trends_spacetime, dtype={'fips': str})
+df_crop_climate_trends_spacetime["time"] = 1
+
+# read in crop switching
+crop_switching = "data/crop_switching.csv"
+df_crop_switching = pd.read_csv(crop_switching)
 
 #############################################################################
 
@@ -85,6 +89,7 @@ for key in data_json_dict.keys():
         {'label': data_json_dict[key]['dataset_label'],
          'value': key}
     )
+
 # Create list of control chart selectors for checklist
 data_style_options = []
 for key in data_styles:
@@ -121,6 +126,8 @@ app.layout = html.Div(
 
                 # Left Column: For desktop, groups data selectors and Choropleth map together visually
                 ########################################################################################################
+
+
                 html.Div(
                     id="left-column", className="inner-container",
                     children=[
@@ -135,39 +142,63 @@ app.layout = html.Div(
                                     value='output.csv',
                                     id="dataframe-dropdown"
                                 ),
-                                html.P(id="data-title", children="Select a Variable to Plot"),
-                                dcc.Dropdown(
-                                    options=[
-                                        {
-                                            "label": "Average of Nighttime Minimum Temperature, (deg. C)",
-                                            "value": "tmin",
-                                        },
-                                        {
-                                            "label": "Average of Daytime High Temperature, (deg. C)",
-                                            "value": "tmax",
-                                        },
-                                        {
-                                            "label": "Average of Daily Mean Temperature, (deg. C)",
-                                            "value": "tmean",
-                                        },
-                                        {
-                                            "label": "Total Annual Precipitation, (mm)",
-                                            "value": "prec",
-                                        },
-                                        {
-                                            "label": "Total April Precipitation, (mm)",
-                                            "value": "aprec",
-                                        },
-                                        {
-                                            "label": "Length of Frost Free Period, (days)",
-                                            "value": "ffp",
-                                        },
+
+                                html.Div(
+                                    id="left-column-small", className="small-inner-container",
+                                    children=[
+
+                                        html.P(id="data-title", children="Select a Variable to Plot"),
+                                            dcc.Dropdown(
+                                                options=[
+                                                    {
+                                                    "label": "Average of Nighttime Minimum Temperature, (deg. C)",
+                                                    "value": "tmin",
+                                                    },
+                                                    {
+                                                    "label": "Average of Daytime High Temperature, (deg. C)",
+                                                    "value": "tmax",
+                                                    },
+                                                    {
+                                                    "label": "Average of Daily Mean Temperature, (deg. C)",
+                                                    "value": "tmean",
+                                                    },
+                                                    {
+                                                    "label": "Total Annual Precipitation, (mm)",
+                                                    "value": "prec",
+                                                    },
+                                                    {
+                                                    "label": "Total April Precipitation, (mm)",
+                                                    "value": "aprec",
+                                                    },
+                                                    {
+                                                    "label": "Length of Frost Free Period, (days)",
+                                                    "value": "ffp",
+                                            },
+                                        ],
+                                        value="tmin",
+                                        id="data-dropdown",
+                                        style={"width": "100%"},
+                                        ),
+
+                                        html.P(id="address-input", children="Type in Your City and State and Hit Return"),
+                                            dcc.Input(
+                                                id="address",
+                                                autoComplete = 'on',
+                                                placeholder="ex. Burlington, VT",
+                                                type="text",
+                                                value="",
+                                                debounce=True,
+                                                style={"width": "100%"},
+                                        ),
+
                                     ],
-                                    value="tmin",
-                                    id="data-dropdown",
+
                                 ),
+
                             ],
+
                         ),
+
 
                         # Panel for Choropleth, includes Year Slider
                         html.Div(
@@ -462,8 +493,10 @@ update_year_slider_visibility - Updates the visibility of the year slider based 
     ]
 )
 def update_year_slider_visibility(visibility_state):
-    if data_json_dict[visibility_state]['space_type'] == 'latlong':
+
+    if data_json_dict[visibility_state]['dataset_label'] != 'Annual Climate Data':
         return {'display': 'none'}
+
 
 
 # Callback for Choropleth figure
@@ -474,14 +507,16 @@ def update_year_slider_visibility(visibility_state):
         Input("data-dropdown", "value"),
         Input("dataframe-dropdown", "value"),
         Input("year-slider", "value"),
+        Input("address", "value")
     ],
 )
-def display_map(figure, data_dropdown, dataframe_dropdown, year_slider):
-    map_dat = select_dataframe(dataframe_dropdown)
-    fig = plot_choropleth(
-        map_dat, dataframe_dropdown, data_dropdown, data_json_dict, year_slider, counties
-    )
+def display_map(figure, data_dropdown, dataframe_dropdown, year_slider, address):
 
+    map_dat = select_dataframe(dataframe_dropdown)
+
+    fig = plot_choropleth(
+        map_dat, dataframe_dropdown, data_dropdown, data_json_dict, year_slider, counties, address, zips_df
+    )
     return fig
 
 
@@ -819,6 +854,10 @@ def select_dataframe(dataframe_label):
         return df_carya_ovata_spacetime
     elif dataframe_label == 'precip_past.csv':
         return df_precipitation
+    elif dataframe_label == 'crop_climate_trends.csv':
+        return df_crop_climate_trends_spacetime
+    elif dataframe_label == 'crop_switching.csv':
+        return df_crop_switching
     else:
         return pd.Dataframe()
 

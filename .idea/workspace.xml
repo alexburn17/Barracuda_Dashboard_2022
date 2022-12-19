@@ -2,14 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="21b272da-5574-44c7-b427-e2280109aa37" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/testFile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Barracuda_Dashboard.py" beforeDir="false" afterPath="$PROJECT_DIR$/Barracuda_Dashboard.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Barracuda_Plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/Barracuda_Plotting.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Barracuda_Processing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Barracuda_Processing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset-names.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/dataset-names.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/known-keys.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/known-keys.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -65,5 +76,17 @@
       <updated>1669661546905</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
