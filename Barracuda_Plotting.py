@@ -40,7 +40,7 @@ def plot_line(df, time_val, y_val, label):
     ))
 
     fig_layout = style_figure(fig['layout'], label)
-    fig.layout.width = 790
+    fig.layout.width = 660
 
     return fig
 
@@ -91,7 +91,7 @@ def plot_control(dataframe, segments, y_col, time_key, label, show_all, flags):
                   )
 
     fig_layout = style_figure(fig['layout'], label)
-    fig.layout.width = 790
+    fig.layout.width = 660
 
 
     return fig
@@ -115,7 +115,7 @@ def plot_statespace(df, time_val, lat_val, lon_val, label):
     ))
 
     fig_layout = style_figure(fig['layout'], label)
-    fig.layout.width = 790
+    fig.layout.width = 660
 
     return fig
 
@@ -303,7 +303,7 @@ def style_figure(layout, title):
     fig_layout["legend"] = dict(orientation="v")
     fig_layout["autosize"] = False
     fig_layout["height"] = 600
-    fig_layout["width"] = 790
+    fig_layout["width"] = 601
     fig_layout["paper_bgcolor"] = STYLES["chart_background"]
     fig_layout["plot_bgcolor"] = STYLES["chart_background"]
     fig_layout["font"]["color"] = STYLES["font"]

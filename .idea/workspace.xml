@@ -4,6 +4,7 @@
     <list default="true" id="21b272da-5574-44c7-b427-e2280109aa37" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Barracuda_Dashboard.py" beforeDir="false" afterPath="$PROJECT_DIR$/Barracuda_Dashboard.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Barracuda_Plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/Barracuda_Plotting.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +47,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/envs/barra_python/bin/python" />
+      <option name="SDK_HOME" value="/opt/anaconda3/envs/myCondaEnvironment/bin/python" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />

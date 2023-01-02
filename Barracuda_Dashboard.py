@@ -280,10 +280,10 @@ app.layout = html.Div(
                                                     "label": "Control Chart",
                                                     "value": "controlchart",
                                                 },
-                                                {
-                                                    "label": "Statespace Chart",
-                                                    "value": "statespace",
-                                                },
+#                                                 {
+#                                                     "label": "Statespace Chart",
+#                                                     "value": "statespace",
+#                                                 },
                                             ],
                                             value="linechart",
                                             id="chart-swapper",
