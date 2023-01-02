@@ -29,8 +29,6 @@ def default_chart(message="Click drag on the map to select counties"):
 def plot_line(df, time_val, y_val, label):
     fig = go.Figure()
 
-    print(df)
-
     fig.add_trace(go.Scatter(
         x=df[time_val],
         y=df[y_val],

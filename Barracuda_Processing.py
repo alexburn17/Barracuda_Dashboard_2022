@@ -81,7 +81,8 @@ def trend_by_slope(dataframe, y_col, t_size):
 def aggregate_dataframe(df, time_val, lat_val, lon_val, y_val, agg_type):
     if agg_type == "mean":
 
-        if "fips" in df.columns:
+        if "fips" in str(df.columns) or "fips" in str(df.index.name):
+            df = df.reset_index()
             summ_df = df[[time_val, "fips", y_val]].groupby(time_val).mean().reset_index()
         else:
             summ_df = df[[time_val, lat_val, lon_val, y_val]].groupby(time_val).mean().reset_index()
