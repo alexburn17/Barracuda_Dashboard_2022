@@ -61,6 +61,11 @@ crop_climate_trends_spacetime = "data/crop_climate_trends.csv"
 df_crop_climate_trends_spacetime = pd.read_csv(crop_climate_trends_spacetime, dtype={'fips': str})
 df_crop_climate_trends_spacetime["time"] = 1
 
+
+# read in carya ovata range shift data imported from spacetime API
+pest = "data/pestAtlas.csv"
+df_pest = pd.read_csv(pest)
+
 # read in crop switching
 crop_switching = "data/crop_switching.csv"
 df_crop_switching = pd.read_csv(crop_switching)
@@ -493,7 +498,7 @@ update_year_slider_visibility - Updates the visibility of the year slider based 
 )
 def update_year_slider_visibility(visibility_state):
 
-    if data_json_dict[visibility_state]['dataset_label'] != 'Annual Climate Data':
+    if data_json_dict[visibility_state]['dataset_label'] != 'Annual Weather Data':
         return {'display': 'none'}
 
 
@@ -857,6 +862,8 @@ def select_dataframe(dataframe_label):
         return df_crop_climate_trends_spacetime
     elif dataframe_label == 'crop_switching.csv':
         return df_crop_switching
+    elif dataframe_label == 'pestAtlas.csv':
+        return df_pest
     else:
         return pd.Dataframe()
 

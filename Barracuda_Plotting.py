@@ -188,7 +188,7 @@ def plot_choropleth(dataframe, dataframe_label, data_label, data_json, years, co
         # Find max value for heat map bar
         max_val = max(dataframe[data_label])
 
-        if data_json[dataframe_label]['dataset_label'] != 'Annual Climate Data':
+        if data_json[dataframe_label]['dataset_label'] != 'Annual Weather Data':
 
 
             dataframe['timeChar'] = dataframe[data_json[dataframe_label]['temporal_key']].astype('str')
