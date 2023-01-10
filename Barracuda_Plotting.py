@@ -147,7 +147,7 @@ def plot_choropleth(dataframe, dataframe_label, data_label, data_json, years, co
                                 animation_frame='timeChar',
                                 range_color=(0, max_val),
                                 color_continuous_scale="Viridis",
-                                opacity=0.8,
+                                opacity=0.6,
                                 )
 
         # Choropleth Layout

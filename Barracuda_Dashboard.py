@@ -66,6 +66,9 @@ df_crop_climate_trends_spacetime["time"] = 1
 pest = "data/pestAtlas.csv"
 df_pest = pd.read_csv(pest)
 
+cm = "data/crop_model.csv"
+df_cm = pd.read_csv(cm)
+
 # read in crop switching
 crop_switching = "data/crop_switching.csv"
 df_crop_switching = pd.read_csv(crop_switching)
@@ -864,6 +867,8 @@ def select_dataframe(dataframe_label):
         return df_crop_switching
     elif dataframe_label == 'pestAtlas.csv':
         return df_pest
+    elif dataframe_label == 'crop_model.csv':
+        return df_cm
     else:
         return pd.Dataframe()
 
