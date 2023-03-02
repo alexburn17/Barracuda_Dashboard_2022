@@ -105,10 +105,13 @@ def aggregate_dataframe(df, time_val, lat_val, lon_val, y_val, agg_type):
 
 
     if agg_type == "max":
-        summ_df = df.groupby(time_val).apply(lambda x: x[x[y_val] == x[y_val].max()])
+#         summ_df = df.groupby(time_val).apply(lambda x: x[x[y_val] == x[y_val].max()])
+#         print(time_val)
+        summ_df = df.groupby(time_val).max().reset_index()
 
     if agg_type == "min":
-        summ_df = df.groupby(time_val).apply(lambda x: x[x[y_val] == x[y_val].min()])
+        #summ_df = df.groupby(time_val).apply(lambda x: x[x[y_val] == x[y_val].min()])
+        summ_df = df.groupby(time_val).min().reset_index()
 
     return summ_df
 #######################################################################################################################
