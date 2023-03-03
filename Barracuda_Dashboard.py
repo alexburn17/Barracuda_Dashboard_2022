@@ -21,7 +21,7 @@ from App import app
 from App import server
 
 from Barracuda_Processing import control_sort, aggregate_dataframe
-from Barracuda_Plotting import default_chart, plot_line, plot_control, plot_choropleth, plot_statespace
+from Barracuda_Plotting import default_chart, plot_line, plot_control, plot_choropleth, plot_statespace, plot_hist, plot_bar
 from Barracuda_Styles import data_styles
 
 DEFAULT_OPACITY = 0.8
@@ -60,6 +60,14 @@ zips_df = pd.read_csv(zips)
 crop_climate_trends_spacetime = "data/crop_climate_trends.csv"
 df_crop_climate_trends_spacetime = pd.read_csv(crop_climate_trends_spacetime, dtype={'fips': str})
 df_crop_climate_trends_spacetime["time"] = 1
+
+
+# read in carya ovata range shift data imported from spacetime API
+pest = "data/pestAtlas.csv"
+df_pest = pd.read_csv(pest)
+
+cm = "data/crop_model.csv"
+df_cm = pd.read_csv(cm)
 
 # read in crop switching
 crop_switching = "data/crop_switching.csv"
@@ -273,7 +281,7 @@ app.layout = html.Div(
                                         dcc.Dropdown(
                                             options=[
                                                 {
-                                                    "label": "Line Chart",
+                                                    "label": "Summary Chart",
                                                     "value": "linechart",
                                                 },
                                                 {
@@ -324,7 +332,7 @@ app.layout = html.Div(
                                     id="line-chart-container",
                                     children=[
                                         html.P(
-                                            "Line Chart",
+                                            "Summary Chart",
                                             id="line-title", className="panel-title"
                                         ),
                                         dcc.Graph(
@@ -493,7 +501,7 @@ update_year_slider_visibility - Updates the visibility of the year slider based 
 )
 def update_year_slider_visibility(visibility_state):
 
-    if data_json_dict[visibility_state]['dataset_label'] != 'Annual Climate Data':
+    if data_json_dict[visibility_state]['dataset_label'] != 'Annual Weather Data':
         return {'display': 'none'}
 
 
@@ -533,6 +541,7 @@ def display_map(figure, data_dropdown, dataframe_dropdown, year_slider, address)
 )
 def display_line_chart(selected_data, chart_dropdown, data_dropdown, dataframe_dropdown, opts, line_chart_style):
     if line_chart_style['display'] != 'none':
+
         if selected_data is None:
             fig = default_chart()
             return fig
@@ -581,10 +590,18 @@ def display_line_chart(selected_data, chart_dropdown, data_dropdown, dataframe_d
         # select the data to plot
         summ_df = aggregate_dataframe(sub_df, time_val, lat_val, lon_val, y_val, chart_dropdown)
 
-        # Line Chart Figure
-        line_fig = plot_line(summ_df, time_val, y_val, the_label)
+        # calculate time length
+        ky = data_json_dict[dataframe_dropdown]['temporal_key']
+        time = summ_df.nunique()[ky]
 
-        return line_fig
+        if time > 2:
+            fig_out = plot_line(summ_df, time_val, y_val, the_label)
+        if time == 1:
+            fig_out = plot_hist(sub_df, y_val, the_label, chart_dropdown)
+        if time == 2:
+            fig_out = plot_bar(summ_df, y_val, time_val, the_label, chart_dropdown)
+
+        return fig_out
 
     else:
         fig = default_chart()
@@ -857,6 +874,10 @@ def select_dataframe(dataframe_label):
         return df_crop_climate_trends_spacetime
     elif dataframe_label == 'crop_switching.csv':
         return df_crop_switching
+    elif dataframe_label == 'pestAtlas.csv':
+        return df_pest
+    elif dataframe_label == 'crop_model.csv':
+        return df_cm
     else:
         return pd.Dataframe()
 

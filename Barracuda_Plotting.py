@@ -37,8 +37,72 @@ def plot_line(df, time_val, y_val, label):
         showlegend=False
     ))
 
-    fig_layout = style_figure(fig['layout'], label)
-    fig.layout.width = 660
+    fig_layout = style_figure(fig['layout'], label, "line")
+
+    return fig
+
+
+
+
+def plot_bar(df, x_val, y_val, label, summary):
+
+    df["time"] = ["Present", "Predicted"]
+    fig = px.bar(data_frame = df, y = x_val, x = y_val)
+
+    fig_layout = style_figure(fig['layout'], label, "bar")
+    fig.update_traces(marker_color='#1c4966')
+
+    return fig
+
+
+
+def plot_hist(df, x_val, label, summary):
+
+    # get summary data
+    if summary == "mean":
+        sum_out = np.mean(df[x_val])
+    if summary == "max":
+        sum_out = np.max(df[x_val])
+    if summary == "min":
+        sum_out = np.min(df[x_val])
+    if summary == "median":
+        sum_out = np.median(df[x_val])
+
+    mx = np.max(df[x_val])
+    freq = np.unique(df[x_val], return_counts=True)
+
+    fig = px.histogram(data_frame = df,
+                 x = x_val
+                 )
+
+    fig.add_vline(x=sum_out, line_dash = 'dash', line_color = 'firebrick', line_width = 4)
+
+    fig.add_annotation(
+        x=sum_out,
+        y=np.max(freq[1]),
+        xref="x",
+        yref="y",
+        text=summary + " " + "value",
+        font=dict(
+            size=25,
+            color="#ffffff"
+            ),
+        align="center",
+        arrowhead=2,
+        arrowsize=1,
+        arrowwidth=4,
+        arrowcolor="#636363",
+        bordercolor="#c7c7c7",
+        borderwidth=2,
+        borderpad=4,
+        ax=mx/10,
+        ay=-mx/10,
+        bgcolor="#808080",
+        opacity=0.8
+        )
+
+    fig_layout = style_figure(fig['layout'], label, "hist")
+    fig.update_traces(marker_color='#1c4966')
 
     return fig
 
@@ -88,9 +152,7 @@ def plot_control(dataframe, segments, y_col, time_key, label, show_all, flags):
                   yref='y'
                   )
 
-    fig_layout = style_figure(fig['layout'], label)
-    fig.layout.width = 660
-
+    fig_layout = style_figure(fig['layout'], label, "line")
 
     return fig
 
@@ -113,7 +175,6 @@ def plot_statespace(df, time_val, lat_val, lon_val, label):
     ))
 
     fig_layout = style_figure(fig['layout'], label)
-    fig.layout.width = 660
 
     return fig
 
@@ -147,7 +208,7 @@ def plot_choropleth(dataframe, dataframe_label, data_label, data_json, years, co
                                 animation_frame='timeChar',
                                 range_color=(0, max_val),
                                 color_continuous_scale="Viridis",
-                                opacity=0.8,
+                                opacity=0.6,
                                 )
 
         # Choropleth Layout
@@ -188,7 +249,7 @@ def plot_choropleth(dataframe, dataframe_label, data_label, data_json, years, co
         # Find max value for heat map bar
         max_val = max(dataframe[data_label])
 
-        if data_json[dataframe_label]['dataset_label'] != 'Annual Climate Data':
+        if data_json[dataframe_label]['dataset_label'] != 'Annual Weather Data':
 
 
             dataframe['timeChar'] = dataframe[data_json[dataframe_label]['temporal_key']].astype('str')
@@ -289,22 +350,28 @@ def plot_trends(fig, df_plot, segments, y_col, time_key, show_all, flags):
 
 
 # Figure Style Information
-def style_figure(layout, title):
+def style_figure(layout, title, type):
     fig_layout = layout
 
-    # See plot.ly/python/reference
-    fig_layout["yaxis"]["title"] = title
-    fig_layout["xaxis"]["title"] = "Time"
+    if type == "hist":
+        fig_layout["yaxis"]["title"] = "Count"
+        fig_layout["xaxis"]["title"] = title
+    if type == "line":
+        fig_layout["yaxis"]["title"] = title
+        fig_layout["xaxis"]["title"] = "Time"
+    if type == "bar":
+        fig_layout["yaxis"]["title"] = title
+        fig_layout["xaxis"]["title"] = "Projection"
+
     fig_layout["yaxis"]["fixedrange"] = True
     fig_layout["xaxis"]["fixedrange"] = False
     fig_layout["hovermode"] = "closest"
     fig_layout["legend"] = dict(orientation="v")
     fig_layout["autosize"] = False
-    fig_layout["height"] = 600
-    fig_layout["width"] = 601
     fig_layout["paper_bgcolor"] = STYLES["chart_background"]
     fig_layout["plot_bgcolor"] = STYLES["chart_background"]
     fig_layout["font"]["color"] = STYLES["font"]
+    fig_layout["font"]["size"] = 16
     fig_layout["xaxis"]["tickfont"]["color"] = STYLES["tick_font"]
     fig_layout["yaxis"]["tickfont"]["color"] = STYLES["tick_font"]
     fig_layout["xaxis"]["gridcolor"] = STYLES["chart_grid"]
