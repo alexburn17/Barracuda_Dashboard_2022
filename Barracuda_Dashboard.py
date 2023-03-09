@@ -13,9 +13,12 @@ from urllib.request import urlopen
 import dash
 from dash import dcc
 from dash import html
+import dash_loading_spinners as dls
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 import plotly.graph_objects as go
 import pandas as pd
+import time
 
 from App import app
 from App import server
@@ -153,7 +156,6 @@ app.layout = html.Div(
                                 html.Div(
                                     id="left-column-small", className="small-inner-container",
                                     children=[
-
                                         html.P(id="data-title", children="Select a Variable to Plot"),
                                             dcc.Dropdown(
                                                 options=[
@@ -207,9 +209,12 @@ app.layout = html.Div(
                         ),
 
 
+
                         # Panel for Choropleth, includes Year Slider
                         html.Div(
+
                             id="choropleth-panel", className="panel",
+
                             children=[
                                 html.Div(
                                     id="heatmap-container",
@@ -218,7 +223,7 @@ app.layout = html.Div(
                                             "Heatmap Over Time (Select Year Below Map)",
                                             id="heatmap-title", className="panel-title"
                                         ),
-                                        dcc.Graph(
+                                        dcc.Loading(dcc.Graph(
                                             id="county-choropleth", className="chart-content",
                                             figure=dict(
                                                 layout=dict(
@@ -232,12 +237,18 @@ app.layout = html.Div(
                                                         pitch=0,
                                                         zoom=3.5,
                                                     ),
+
                                                     autosize=True,
+
                                                 ),
                                             ),
+                                        ), fullscreen = True,
+                                        type="dot",
                                         ),
                                     ],
                                 ),
+
+
                                 html.Div(
                                     id="year-container",
                                     children=[
@@ -493,12 +504,16 @@ update_year_slider_visibility - Updates the visibility of the year slider based 
 # Callbacks
 ########################################################################################################################
 # Update Year Slider visibility, county based datasets need a manual slider.
+
+
 @app.callback(
     Output(component_id='year-container', component_property='style'),
     [
         Input(component_id='dataframe-dropdown', component_property='value')
     ]
 )
+
+
 def update_year_slider_visibility(visibility_state):
 
     if data_json_dict[visibility_state]['dataset_label'] != 'Annual Weather Data':
@@ -517,6 +532,8 @@ def update_year_slider_visibility(visibility_state):
         Input("address", "value")
     ],
 )
+
+
 def display_map(figure, data_dropdown, dataframe_dropdown, year_slider, address):
 
     map_dat = select_dataframe(dataframe_dropdown)
@@ -623,6 +640,7 @@ def display_line_chart(selected_data, chart_dropdown, data_dropdown, dataframe_d
         State("data-dropdown", "options"),
         State("control-chart-container", "style"),
     ],
+
 )
 def display_control_chart(selected_data, chart_dropdown, data_dropdown, dataframe_dropdown, trend, deviation,
                           flag_checklist, all_trends, opts, control_chart_style):
@@ -838,7 +856,7 @@ def change_panel(chart_swapper, aggregation_dropdown):
 # Update Data Selection Dropdown
 @app.callback([
     Output("data-dropdown", "options"),
-    Output("data-dropdown", "value")
+    Output("data-dropdown", "value"),
 ],
     [
         Input("dataframe-dropdown", "value")
