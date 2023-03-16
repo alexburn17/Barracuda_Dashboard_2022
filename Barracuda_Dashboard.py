@@ -19,6 +19,8 @@ from dash.dependencies import Input, Output, State
 import plotly.graph_objects as go
 import pandas as pd
 import time
+import os
+from flask_caching import Cache
 
 from App import app
 from App import server
@@ -107,6 +109,15 @@ for key in data_styles:
 
 ########################################################################################################################
 
+
+cache = Cache(app.server, config={
+    # try 'filesystem' if you don't want to setup redis
+    'CACHE_TYPE': 'filesystem',
+    'CACHE_DIR': 'cache-directory'
+})
+app.config.suppress_callback_exceptions = True
+
+timeout = 20
 
 # App layout
 ########################################################################################################################
@@ -242,8 +253,7 @@ app.layout = html.Div(
 
                                                 ),
                                             ),
-                                        ), fullscreen = True,
-                                        type="dot",
+                                        ), type="dot",
                                         ),
                                     ],
                                 ),
@@ -533,6 +543,7 @@ def update_year_slider_visibility(visibility_state):
     ],
 )
 
+@cache.memoize(timeout=timeout)  # in seconds
 
 def display_map(figure, data_dropdown, dataframe_dropdown, year_slider, address):
 
