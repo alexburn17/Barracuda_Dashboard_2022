@@ -117,7 +117,7 @@ cache = Cache(app.server, config={
 })
 app.config.suppress_callback_exceptions = True
 
-timeout = 20
+timeout = 300
 
 # App layout
 ########################################################################################################################

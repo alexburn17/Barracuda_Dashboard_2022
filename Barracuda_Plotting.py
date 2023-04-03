@@ -264,7 +264,6 @@ def plot_choropleth(dataframe, dataframe_label, data_label, data_json, years, co
                                labels={data_label: ' ', 'time': 'Time', 'Counties': 'County Code'}
                                )
         else:
-
             # filter by year
             dataframe = dataframe[(dataframe[data_json[dataframe_label]['temporal_key']] == years)]
             fig = px.choropleth_mapbox(dataframe, geojson=counties, locations='fips', color=data_label,
