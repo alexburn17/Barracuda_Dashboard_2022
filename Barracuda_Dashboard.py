@@ -543,15 +543,31 @@ def update_year_slider_visibility(visibility_state):
     ],
 )
 
-@cache.memoize(timeout=timeout)  # in seconds
-
+#@cache.memoize(timeout=timeout)  # in seconds
+#@cache.cached(timeout=timeout, key_prefix="XYZ-no-suitable_constant")
 def display_map(figure, data_dropdown, dataframe_dropdown, year_slider, address):
 
-    map_dat = select_dataframe(dataframe_dropdown)
+    #print("dataframe_dropdown: " + str(dataframe_dropdown))
+    map_dat = cache.get("map_dat" + str(dataframe_dropdown))
+    if map_dat is None:
+        map_dat = select_dataframe(dataframe_dropdown)
+        cache.set("map_dat" + str(dataframe_dropdown), map_at)
+    #    print("map_dat cache miss")
+    #else:
+    #    print("map_dat cache hit")
 
-    fig = plot_choropleth(
-        map_dat, dataframe_dropdown, data_dropdown, data_json_dict, year_slider, counties, address, zips_df
-    )
+    #print("map_dat: " + str(map_dat))
+
+    fig = cache.get("fig_" + str(dataframe_dropdown))
+    if fig is None:
+        fig = plot_choropleth(
+            map_dat, dataframe_dropdown, data_dropdown, data_json_dict, year_slider, counties, address, zips_df
+        )
+        cache.set("fig_" + str(dataframe_dropdown), fig)
+    #    print("fig cache miss")
+    #else:
+    #    print("fig cache hit")
+
     return fig
 
 
