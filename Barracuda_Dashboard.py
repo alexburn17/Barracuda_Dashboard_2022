@@ -551,7 +551,7 @@ def display_map(figure, data_dropdown, dataframe_dropdown, year_slider, address)
     map_dat = cache.get("map_dat" + str(dataframe_dropdown))
     if map_dat is None:
         map_dat = select_dataframe(dataframe_dropdown)
-        cache.set("map_dat" + str(dataframe_dropdown), map_at)
+        cache.set("map_dat" + str(dataframe_dropdown), map_dat)
     #    print("map_dat cache miss")
     #else:
     #    print("map_dat cache hit")
