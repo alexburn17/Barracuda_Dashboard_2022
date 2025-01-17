@@ -140,6 +140,30 @@ body {
         padding-right: 2rem;
     }
 
+    #navigation {
+ 	//border: red 2px solid;
+        text-align: left;
+	//background-color: #3F3F3F;
+	background-color: #AFAFAF;
+	font-size: medium;
+    }
+
+    #nav-label {
+	float: left;
+	font-weight: bold;
+    }
+
+    .list-group-item {
+	  display: inline-block;
+  }
+
+    .list-group {
+	//  list-style: none;
+	//  margin: 0;
+	//  padding: 0;
+	display: inline;
+    }
+
     #control-container {
         display: none;
         flex-direction: column;
@@ -155,6 +179,19 @@ body {
 
 #logo {
     height: 10rem;
+}
+
+#sub-header {
+    margin-left: 1.5%;
+    font-size: 2.0rem;
+}
+
+.category-meta {
+    font-size: 1.5rem;
+    border-left: var(--highlight-color) solid 1rem;
+    padding-left: 1rem;
+    max-width: 100rem;
+    margin: 2rem 0 3rem 0;
 }
 
 #description {
@@ -174,6 +211,11 @@ body {
     color: var(--text-secondary-color);
     margin-left: 1.5%;
 }
+#navigation h5 {
+	text-align: left;
+	background-color="6F6F6F";
+}
+
 
 /* Typography
 –––––––––––––––––––––––––––––––––––––––––––––––––– */

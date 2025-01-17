@@ -182,8 +182,12 @@ def plot_statespace(df, time_val, lat_val, lon_val, label):
 # Creates Choropleth figure
 def plot_choropleth(dataframe, dataframe_label, data_label, data_json, years, counties, address, zips_df):
 
-    if data_json[dataframe_label]['space_type'] == 'latlong':
+    #if 'space_type' not in data_json[dataframe_label]:
+    #if dataframe_label not in data_json:
+    #    print("Barracuda_Plotting.py::plot_choropleth(): No dataset selected")
+    #    return
 
+    if data_json[dataframe_label]['space_type'] == 'latlong':
         lat = 43
         lon = -74
         zoom = 4.5
