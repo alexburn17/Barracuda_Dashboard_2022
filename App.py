@@ -16,6 +16,7 @@ navigation = dbc.ListGroup(
                 ]
             )
 
+nav_sub_header = html.Div([" Dataset Categories: | ", navigation])
 app.layout = html.Div(
     [
        # App Header, common to all pages
@@ -31,12 +32,14 @@ app.layout = html.Div(
                     id="description",
                     children="Biodiversity and Rural Response to Climate Change Using Data Analysis",
                 ),
+                nav_sub_header,
             ],
         ),
 
         # Navigation generated above
-        dbc.ListGroupItem(" Dataset Categories: | "),
-        navigation,
+        #dbc.ListGroupItem(" Dataset Categories: | "),
+        #html.P(class="sub-header-item", " Dataset Categories: | "),
+        #navigation,
 
         # content of each page
         dash.page_container
